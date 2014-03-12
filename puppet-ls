@@ -62,7 +62,7 @@ if [ -n "$follow_links" ];then
 elif [ -n "$recursive" ];then
   lister="find $target"
 else
-  lister="ls -d1 $target/*"
+  lister="ls -d1 $target/.[\\!.]* $target/*"
 fi
 
 catalog_filelist=$(mktemp -q /tmp/$appname.XXXXXX)
