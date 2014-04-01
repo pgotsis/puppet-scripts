@@ -58,11 +58,11 @@ target="${1-$(pwd)}"
 target="${target%/}"
 
 if [ -n "$follow_links" ];then
-  lister="find -L $target"
+  lister="find -L \"\$target\""
 elif [ -n "$recursive" ];then
-  lister="find $target"
+  lister="find \"\$target\""
 else
-  lister="ls -d1 $target/"'.[!.]'"* $target/*"
+  lister="find \"\$target\" -mindepth 1 -maxdepth 1"
 fi
 
 # Tests if puppet enterprise is used.
@@ -84,6 +84,6 @@ trap "rm -f $catalog_filelist $lister_filelist" 0 1 2 15
   sed -e '/File\[/!d' -e 's/File\[//' -e 's/\]://' -e 's/ //g' < $vardir/state/state.yaml
 ) | sort > $catalog_filelist
 
-$lister | sort > $lister_filelist
+eval "$lister" | sort > $lister_filelist
 
 $comm $catalog_filelist $lister_filelist
